@@ -49,16 +49,33 @@ let getAllDoctors = () => {
     })
 }
 
+let checkRequiredFields = (inputData) => {
+    let arr = ['doctorId','contentHTML', 'contentMarkdown', 'action', 'selectedPrice', 'selectedPayment' ,'selectedProvince', 'nameClinic', 'addressClinic', 'note', 'specialtyId']
+    let isValid = true ;
+    let element = '';
+    for (let i = 0; i < arr.length ; i++){
+        if(!inputData[arr[i]]){
+            isVailid = false;
+            element = arr[i]
+            break
+        }
+    }
+
+    return {
+        isValid: isValid,
+        element: element
+    }
+
+}
+
 let saveDetailInforDoctor = (inputData) => {
     return new Promise(async(resolve, reject)=>{
         try {
-            if(!inputData.doctorId || !inputData.contentHTML || !inputData.contentMarkdown|| !inputData.action
-                || !inputData.selectedPrice || !inputData.selectedPayment || !inputData.selectedProvince ||
-                !inputData.nameClinic || !inputData.addressClinic || !inputData.note
-            ){
+                let checkObj = checkRequiredFields(inputData)
+            if(checkObj.isValid === false){
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing parameter'
+                    errMessage: `Missing parameter: ${checkObj.element}`
                 })
             }else{
                 if(inputData.action === 'CREATE'){
@@ -98,6 +115,8 @@ let saveDetailInforDoctor = (inputData) => {
                         doctorInfor.nameClinic= inputData.nameClinic;
                         doctorInfor.addressClinic = inputData.addressClinic;
                         doctorInfor.note = inputData.note;
+                        doctorInfor.specialtyId = inputData.specialtyId;
+                        doctorInfor.clinicId = inputData.clinicId;
 
                         await doctorInfor.save()
                 }else{
@@ -111,6 +130,8 @@ let saveDetailInforDoctor = (inputData) => {
                     nameClinic: inputData.nameClinic,
                     addressClinic:  inputData.addressClinic,
                     note:  inputData.note,
+                    specialtyId: inputData.specialtyId,
+                    clinicId : inputData.clinicId
                     })
                 }
                 
@@ -156,7 +177,7 @@ let getDetaiDoctorbyIdService= (inputId) => {
                                 {model: db.Allcode, as: 'priceTypeData', attributes:['valueEn', 'valueVi']},
                                 {model: db.Allcode, as: 'provinceTypeData', attributes:['valueEn', 'valueVi']},
                                 {model: db.Allcode, as: 'paymentTypeData', attributes:['valueEn', 'valueVi']},
-
+                                // {model: db.Specialty, as: 'SpecialtyData', attributes:['name']}, // tự làm
                             ]
                             
                         }
