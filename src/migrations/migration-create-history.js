@@ -17,8 +17,11 @@ module.exports = {
       description: {
         type: Sequelize.TEXT
       },
+      date: {
+        type: Sequelize.STRING
+      },
       files : {
-        type: Sequelize.TEXT
+        type: Sequelize.BLOB('long')
       },
       createdAt: {
         allowNull: false,

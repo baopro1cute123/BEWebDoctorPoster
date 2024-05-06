@@ -448,6 +448,13 @@ let sendRemedyService = (data) => {
                 await emailService.sendAttachment(data);
                 
                 // theem vao historys
+                    await db.History.create({
+                        patientId: data.patientId,
+                        doctorId: data.doctorId,
+                        description: data.reason,
+                        files : data.imgBase64,
+                        date : data.patientDate
+                    })
                 resolve({
                     errCode: 0,
                     errMessage: "Ok",
