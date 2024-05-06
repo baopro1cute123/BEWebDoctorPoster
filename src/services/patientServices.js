@@ -10,63 +10,127 @@ let buildUrlEmail = (doctorId, token) => {
     return result;
 }
 
-let postBookAppointmentServices = (data) => {
-    return new Promise(async(resolve, reject)=>{
-        try {
-            if(!data.email || !data.doctorId || !data.timeType || !data.date ||
-                !data.fullName
-            ){
-                resolve({
-                    errCode : 1,
-                    errMessage : "Missing required parameters"
-                })
-            }else {
+// let postBookAppointmentServices = (data) => {
+//     return new Promise(async(resolve, reject)=>{
+//         try {
+//             if(!data.email || !data.doctorId || !data.timeType || !data.date ||
+//                 !data.fullName || !data.selectedGender || !data.address || !data.phonenumber
+//             ){
+//                 resolve({
+//                     errCode : 1,
+//                     errMessage : "Missing required parameters"
+//                 })
+//             }else {
 
-                let token = uuidv4();
+//                 let token = uuidv4();
                 
+//                 await emailService.sendSimpleEmail({
+//                     reciverEmail: data.email,
+//                     patientName: data.fullName,
+//                     time: data.timeString,
+//                     doctorName: data.doctorName,
+//                     language : data.language,
+//                     redirecLink : buildUrlEmail(data.doctorId, token)
+//                 })
+
+//                 let user = await db.User.findOrCreate({
+//                     where: { email: data.email },
+//                     defaults: {
+//                         email: data.email,
+//                         roleId: 'R3',
+//                         gender: data.selectedGender,
+//                         address: data.address,
+//                         firstName: data.fullName,
+//                         phonenumber: data.phonenumber
+//                     }
+//                 });
+
+//                 // create a booking record
+//                 if(user && user[0]) {
+//                     await db.Booking.findOrCreate({
+//                         where: {  patientId: user[0].id} ,
+//                         defaults : {
+//                             statusId: 'S1',
+//                             doctorId: data.doctorId,
+//                             patientId: user[0].id,
+//                             date : data.date,
+//                             timeType : data.timeType,
+//                             token : token,
+//                         }
+//                     })
+//                 }
+//                 resolve({
+//                     errCode: 0,
+//                     errMessage: "Save user patient succced"
+//                 })
+//             }
+        
+//         } catch (e) {
+//             reject(e);
+//         }
+//     })
+// }
+
+let postBookAppointmentServices = (data) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if (!data.email || !data.doctorId || !data.timeType || !data.date ||
+                !data.fullName || !data.selectedGender || !data.address || !data.phonenumber
+            ) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing required parameters"
+                });
+            } else {
+                let token = uuidv4();
+
+                let user = await db.User.findOne({ where: { email: data.email } });
+
+                if (!user) {
+                    // User doesn't exist, create a new user
+                    user = await db.User.create({
+                        email: data.email,
+                        roleId: 'R3',
+                        gender: data.selectedGender,
+                        address: data.address,
+                        firstName: data.fullName,
+                        phonenumber: data.phonenumber
+                    });
+                }
+
+                // create a booking record
+                await db.Booking.create({
+                    statusId: 'S1',
+                    doctorId: data.doctorId,
+                    patientId: user.id,
+                    date: data.date,
+                    timeType: data.timeType,
+                    token: token,
+                });
+
+                // Send email
                 await emailService.sendSimpleEmail({
                     reciverEmail: data.email,
                     patientName: data.fullName,
                     time: data.timeString,
                     doctorName: data.doctorName,
-                    language : data.language,
-                    redirecLink : buildUrlEmail(data.doctorId, token)
-                })
-
-                let user = await db.User.findOrCreate({
-                    where : {email: data.email} ,
-                    defaults: {
-                        email: data.email,
-                        roleId : 'R3'
-                    },
-                    
+                    language: data.language,
+                    redirecLink: buildUrlEmail(data.doctorId, token)
                 });
 
-                // create a booking record
-                if(user && user[0]) {
-                    await db.Booking.findOrCreate({
-                        where: {  patientId: user[0].id} ,
-                        defaults : {
-                            statusId: 'S1',
-                            doctorId: data.doctorId,
-                            patientId: user[0].id,
-                            date : data.date,
-                            timeType : data.timeType,
-                            token : token,
-                        }
-                    })
-                }
                 resolve({
                     errCode: 0,
-                    errMessage: "Save user patient succced"
-                })
+                    errMessage: "Appointment booked successfully"
+                });
             }
-        
+
         } catch (e) {
             reject(e);
         }
-    })
-}
+    });
+};
+
+
 
 let postVerifyBookAppointmentServices = (data) => {
     return new Promise(async(resolve, reject)=>{
