@@ -70,7 +70,6 @@ let getDetailClinicByIdService = (inputId) => {
                     },
                     attributes: ['descriptionHTML', 'descriptionMarkdown','name', 'address']
                 })
-                console.log(data)
                 if(data){
 
                     let doctorClinic = []
@@ -111,7 +110,6 @@ let UpdateClinicService= (data) => {
                     raw: false
 
                 });
-                console.log(clinic)
                 if (clinic) {
                     clinic.descriptionHTML = data.descriptionHTML
                     clinic.name = data.name,

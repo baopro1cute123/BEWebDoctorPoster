@@ -37,7 +37,6 @@ async function callGPT(promptContent, systemContent, previousChat) {
       messages: messages,
     });
 
-    console.log(1);
     console.log(response.data.choices[0].message.content);
     return response.data.choices[0].message.content;
   } catch (error) {

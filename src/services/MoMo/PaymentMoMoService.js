@@ -59,7 +59,6 @@ const paymentMoMoService = (price, token, doctorId) => {
 
         try {
             const result = await axios(options);
-            console.log(redirectUrl)
             resolve({
                 errCode: 0,
                 errMessage: "Ok",

@@ -21,7 +21,6 @@ let sendSimpleEmail = async (dataSend) => {
            
         });
 
-        console.log("Email sent: " + info.response);
     } catch (error) {
         console.error("Error sending email:", error);
     }
@@ -162,7 +161,6 @@ let sendCancleEmail = async (dataSend) => {
            
         });
 
-        console.log("Email sent: " + info.response);
     } catch (error) {
         console.error("Error sending email:", error);
     }

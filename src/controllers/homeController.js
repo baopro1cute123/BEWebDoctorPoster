@@ -27,7 +27,6 @@ let getCRUDPage = (req, res) => {
 }
 let postCRUD = async(req, res) => {
     let message = await CRUDServices.createNewUser(req.body);
-    console.log(message)
     return res.send('Thêm mới người dùng thành công');
 }
 
@@ -43,7 +42,6 @@ let getEditCRUD = async(req, res) => {
     let userId = req.query.id;
     if(userId) {
         let userData = await CRUDServices.getUserInfoById(userId)
-        // console.log(userData)
         return res.render('editCRUD.ejs',{
             userData : userData
         })
