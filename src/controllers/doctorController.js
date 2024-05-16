@@ -128,7 +128,36 @@ let sendRemedy = async(req, res) => {
         })
     }
 }
+
+let CancleBooking = async(req, res) => {
+    try {
+        let infor = await doctorService.CancleBookingService(req.body);
+        return res.status(200).json(infor)
+
+    }catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from server'
+        })
+    }
+}
+
+let getPriceDoctorById = async(req, res) => {
+    try {
+        let infor = await doctorService.getPriceDoctorByIdService(req.query.doctorId);
+        return res.status(200).json(infor)
+
+    }catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from server'
+        })
+    }
+}
+
+
 module.exports = {
+    getPriceDoctorById : getPriceDoctorById,
     getTopDoctorHome:getTopDoctorHome,
     getAllDoctors : getAllDoctors,
     postInforDoctor: postInforDoctor,
@@ -139,4 +168,5 @@ module.exports = {
     getProFileDoctorById: getProFileDoctorById,
     getListPatientForDoctor: getListPatientForDoctor,
     sendRemedy: sendRemedy,
+    CancleBooking: CancleBooking,
 }

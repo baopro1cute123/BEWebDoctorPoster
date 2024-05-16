@@ -97,6 +97,64 @@ let getDetailClinicByIdService = (inputId) => {
     })
 }
 
+let UpdateClinicService= (data) => {
+    return new Promise(async(resolve, reject)=>{
+        try {
+            if(!data.name || !data.imageBase64 || !data.descriptionHTML || !data.descriptionMarkdown ||!data.address ){
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing parameter !"
+                })
+            }else{
+                let clinic = await db.Clinic.findOne({
+                    where : {id: data.clinicId},
+                    raw: false
+
+                });
+                console.log(clinic)
+                if (clinic) {
+                    clinic.descriptionHTML = data.descriptionHTML
+                    clinic.name = data.name,
+                    clinic.address =  data.address ,
+                    clinic.descriptionMarkdown =  data.descriptionMarkdown,
+                    clinic.imageBase64 = data.imageBase64,
+                    await clinic.save();
+                    resolve({
+                        errCode: 0,
+                        errMessage: "Ok",
+                        data: clinic
+                    })
+                }
+                
+            }
+        
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let DeleteClinicService = (userId) => {
+    return new Promise(async(resolve, reject)=>{
+        let clinic = await db.Clinic.findOne({
+            where: { id: userId}
+        })
+        if(!clinic) {
+            resolve({
+                errCode: 2,
+                errMessage: "The Clinic isn't exist"
+            })
+        }
+        await db.Clinic.destroy({
+            where: { id: userId}
+        })
+        resolve({
+            errCode: 0,
+            message: "The Clinic is Delete"
+        })
+    })
+}
+
 module.exports = {
-    CreateClinicService, getAllClinicService , getDetailClinicByIdService
+    CreateClinicService, getAllClinicService , getDetailClinicByIdService , UpdateClinicService , DeleteClinicService
 }

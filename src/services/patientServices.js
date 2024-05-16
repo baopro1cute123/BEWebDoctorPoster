@@ -3,9 +3,16 @@ import db from '../models/index';
 import emailService from './emailService';
 require('dotenv').config();
 
-let buildUrlEmail = (doctorId, token) => {
+// let buildUrlEmail = (doctorId, token) => {
 
-    let result = `${process.env.URL_REACT}/verify-booking?token=${token}&doctorId=${doctorId}`
+//     let result = `${process.env.URL_REACT}/verify-booking?token=${token}&doctorId=${doctorId}`
+
+//     return result;
+// }
+
+let buildUrlEmailPayment = (doctorId, token) => {
+
+    let result = `${process.env.URL_REACT}/done-payment?token=${token}&doctorId=${doctorId}`
 
     return result;
 }
@@ -115,7 +122,7 @@ let postBookAppointmentServices = (data) => {
                     time: data.timeString,
                     doctorName: data.doctorName,
                     language: data.language,
-                    redirecLink: buildUrlEmail(data.doctorId, token)
+                    redirecLink: buildUrlEmailPayment(data.doctorId, token)
                 });
 
                 resolve({
@@ -163,6 +170,24 @@ let postVerifyBookAppointmentServices = (data) => {
                         errMessage: "Update appointment error!"
                     })
                 }
+                //xóa lịch hẹn 
+                let res = await db.Booking.findOne({
+                    where: {
+                        doctorId: data.doctorId,
+                        token: data.token,
+                        statusId: 'S2'
+                    },
+                    raw: false
+                })
+
+                await db.Schedule.destroy({
+                    where: {
+                        doctorId: res.doctorId,
+                        timeType: res.timeType,
+                        date : res.date
+                    }
+                })
+
             }
             
         
@@ -172,6 +197,109 @@ let postVerifyBookAppointmentServices = (data) => {
     })
 }
 
+let getAllPatientServices = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let patients = await db.History.findAll({
+                include: [
+                    {
+                        model: db.User, as: 'patientDataHistory',
+                        attributes:['firstName', 'email', 'address'],
+
+                    },
+                    {
+                        model: db.User,
+                        as: 'doctorDataHistory',
+                        attributes:['firstName', 'lastName'],
+                    }
+                ],
+                raw : false,
+                nest: true
+            });
+            resolve({
+                errCode: 0,
+                errMessage: "Ok",
+                data: patients
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+let getAllPatientByDoctorIdServices = (doctorId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let patients = await db.History.findAll({
+                where : {
+                    doctorId : doctorId
+                },
+                include: [
+                    {
+                        model: db.User, as: 'patientDataHistory',
+                        attributes:['firstName', 'email', 'address'],
+
+                    },
+                    {
+                        model: db.User,
+                        as: 'doctorDataHistory',
+                        attributes:['firstName', 'lastName'],
+                    }
+                ],
+                raw : false,
+                nest: true
+            });
+            resolve({
+                errCode: 0,
+                errMessage: "Ok",
+                data: patients
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+let getAllPatientBookingServices = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let patients = await db.Booking.findAll({
+                include: [
+                    {
+                        model: db.User, as: 'patientData',
+                        attributes:['firstName', 'email', 'address'],
+                     },
+                    {
+                        model: db.User,
+                        as: 'doctorIdData',
+                        attributes:['firstName', 'lastName'],
+                    },
+                    {
+                        model: db.Allcode,
+                        as: 'timeTypeDataPatient',
+                        attributes:['valueEn', 'valueVi'],
+                    },
+                    {
+                        model: db.Allcode,
+                        as: 'statusData',
+                        attributes:['valueEn', 'valueVi'],
+                    },
+                ],
+                raw : false,
+                nest: true
+            });
+            resolve({
+                errCode: 0,
+                errMessage: "Ok",
+                data: patients
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+
 module.exports = {
-    postBookAppointmentServices , postVerifyBookAppointmentServices
+    postBookAppointmentServices , postVerifyBookAppointmentServices , getAllPatientServices, getAllPatientByDoctorIdServices, getAllPatientBookingServices
 }

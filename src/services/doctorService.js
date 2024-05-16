@@ -447,6 +447,7 @@ let sendRemedyService = (data) => {
                 //send email
                 await emailService.sendAttachment(data);
                 
+                
                 // theem vao historys
                     await db.History.create({
                         patientId: data.patientId,
@@ -455,6 +456,79 @@ let sendRemedyService = (data) => {
                         files : data.imgBase64,
                         date : data.patientDate
                     })
+
+                    let admin = await db.User.findOne({
+                        where : {
+                            roleId: 'R1'
+                        }
+                    })
+                    let adminId = admin.id
+                    let totalAmount = data.totalAmount
+                    let adminAmount = totalAmount * 0.3
+                    let doctorAmount = totalAmount * 0.7
+
+                    await db.Revenue.create({
+                        date: data.patientDate,
+                        userId: data.doctorId,
+                        amount: doctorAmount
+                    })
+                    await db.Revenue.create({
+                        date: data.patientDate,
+                        userId: adminId,
+                        amount: adminAmount
+                    })
+
+                    // let doctor = await db.Doctor_Infor.findOne({ 
+                    //     where: {
+                    //         doctorId: data.doctorId
+                    //     }
+                    // });
+                    // if (doctor) {
+                    //     doctor.count += 1;
+                    //     await doctor.save();
+                    // }
+                    
+                    // console.log("check doctor", doctor);
+                    
+                
+                resolve({
+                    errCode: 0,
+                    errMessage: "Ok",
+                    data: data
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let CancleBookingService = (data) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if (!data.email || !data.doctorId || !data.patientId || !data.timeType) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing required parameters"
+                });
+            } else {
+                //update
+                    let appointment = await db.Booking.findOne({
+                        where: {
+                            doctorId: data.doctorId,
+                            patientId: data.patientId,
+                            timeType: data.timeType,
+                            statusId: 'S2'
+                        },
+                        raw: false
+                    })
+                    if (appointment) {
+                        appointment.statusId = 'S4'
+                        await appointment.save()
+                    }
+
+                //send email
+                await emailService.sendCancleEmail(data);
+                
                 resolve({
                     errCode: 0,
                     errMessage: "Ok",
@@ -467,7 +541,42 @@ let sendRemedyService = (data) => {
     });
 };
 
+let getPriceDoctorByIdService = (doctorId) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if (!doctorId) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing required parameters"
+                });
+            } else {
+                let data = await db.Doctor_Infor.findOne({
+                    where: {
+                        doctorId: doctorId,
+                    },
+                    include: [
+                        {model: db.Allcode, as: 'priceTypeData', attributes:['valueEn', 'valueVi']},
+
+                
+                ],
+                    raw: false,
+                    nest: true
+                });
+
+                let price = data ? data.priceTypeData.valueVi : null;
+
+                resolve({
+                    errCode: 0,
+                    errMessage: "Ok",
+                    data: price
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 
 module.exports = {
-    sendRemedyService, getListPatientForDoctorService,getProFileDoctorByIdService,getExtraInforDoctorByIdService, getScheduleByDateServices,getTopDoctor,getAllDoctors,saveDetailInforDoctor,getDetaiDoctorbyIdService,bulkCreateScheduleService
+    getPriceDoctorByIdService ,CancleBookingService ,sendRemedyService, getListPatientForDoctorService,getProFileDoctorByIdService,getExtraInforDoctorByIdService, getScheduleByDateServices,getTopDoctor,getAllDoctors,saveDetailInforDoctor,getDetaiDoctorbyIdService,bulkCreateScheduleService
 }

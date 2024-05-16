@@ -35,20 +35,20 @@ let getBodyHTMLEmail = (dataSend) => {
         <h4>Bạn nhận được email này vì đã đặt lịch khám bệnh online trên BOOKING DOCTOR</h4>
         <p>Thông tin đặt lịch khám bệnh</p>
         <div>
-          <b>Thời gian: ${dataSend.time}</b>
-          </div>
-          <div>
-          <b>Bác sĩ: ${dataSend.doctorName}</b>
-          </div>
-          <p>Nếu các thông tin trên là đúng thì vui lòng click vào đường link bên dưới để xác nhận
-          và hoàn tất thủ tục đặt lịch khám bệnh
-          </p>
-          <div>
+        <b>Thời gian: ${dataSend.time}</b>
+        </div>
+        <div>
+        <b>Bác sĩ: ${dataSend.doctorName}</b>
+        </div>
+        <p>Nếu các thông tin trên là đúng thì vui lòng click vào đường link bên dưới để xác nhận
+        và hoàn tất thủ tục đặt lịch khám bệnh
+        </p>
+        <div>
             <a href=${dataSend.redirecLink} target='_blank'>Lịch hẹn ở đây</a>
-          </div>
-          <div>
-          Xin chân thành cảm ơn !
-          </div>
+        </div>
+        <div>
+        Xin chân thành cảm ơn !
+        </div>
         </div>
         `
     }
@@ -109,11 +109,20 @@ let sendAttachment = async (dataSend) => {
 }
 
 let getBodyHTMLEmailRemedy = (dataSend) => {
+    let timeRange = '';
+    timeRange = dataSend.timeType === 'T1' ? '8:00 - 9:00' :
+                dataSend.timeType === 'T2' ? '9:00 - 10:00' :
+                dataSend.timeType === 'T3' ? '10:00 - 11:00' :
+                dataSend.timeType === 'T4' ? '11:00 - 12:00' :
+                dataSend.timeType === 'T5' ? '13:00 - 14:00' :
+                dataSend.timeType === 'T6' ? '14:00 - 15:00' :
+                dataSend.timeType === 'T7' ? '15:00 - 16:00' :
+                dataSend.timeType === 'T8' ? '16:00 - 17:00' : 'Không xác định';
     let result = '';
     if (dataSend.language === 'vi') {
         result = `
             <h3>Xin chào ${dataSend.patientName} </h3>
-            <h4>Bạn nhận được email này vì đã đặt lịch BOOKING DOCTOR và đã khám bệnh thành công !</h4>
+            <h4>Bạn nhận được email này vì đã đặt lịch BOOKING DOCTOR và đã khám bệnh thành công vào lúc: ${timeRange}, ngày: ${dataSend.emailDate}!</h4>
             <p>Thông tin đơn thuốc được gửi trong file đính kèm</p>
             <div>
                 Xin chân thành cảm ơn !
@@ -123,7 +132,7 @@ let getBodyHTMLEmailRemedy = (dataSend) => {
     if (dataSend.language === 'en') {
         result = `
             <h3>Hello ${dataSend.patientName} </h3>
-            <h4>You are receiving this email because you have booked a BOOKING DOCTOR appointment and had a successful medical examination!</h4>
+            <h4>You are receiving this email because you have booked a BOOKING DOCTOR appointment and had a successful medical examination at: ${timeRange}, ${dataSend.patientDate}!</h4>
             <p>Prescription information is sent in the attached file</p>
             <div>
                 Sincerely thank !
@@ -133,6 +142,70 @@ let getBodyHTMLEmailRemedy = (dataSend) => {
     return result;
 }
 
+let sendCancleEmail = async (dataSend) => {
+    try {
+        let transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
+            auth: {
+                user: process.env.EMAIL_APP,
+                pass: process.env.EMAIL_APP_PASSWORD,
+            },
+        });
+
+        let info = await transporter.sendMail({
+            from: '"BOOKING DOCTOR" <bookingdoctor370@gmail.com>',
+            to: dataSend.email,
+            subject: "Kết quả đặt lịch khám bệnh",
+            html: getBodyHTMLEmailCancle(dataSend),
+           
+        });
+
+        console.log("Email sent: " + info.response);
+    } catch (error) {
+        console.error("Error sending email:", error);
+    }
+};
+
+let getBodyHTMLEmailCancle = (dataSend) => {
+
+    let timeRange = '';
+    timeRange = dataSend.timeType === 'T1' ? '8:00 - 9:00' :
+                dataSend.timeType === 'T2' ? '9:00 - 10:00' :
+                dataSend.timeType === 'T3' ? '10:00 - 11:00' :
+                dataSend.timeType === 'T4' ? '11:00 - 12:00' :
+                dataSend.timeType === 'T5' ? '13:00 - 14:00' :
+                dataSend.timeType === 'T6' ? '14:00 - 15:00' :
+                dataSend.timeType === 'T7' ? '15:00 - 16:00' :
+                dataSend.timeType === 'T8' ? '16:00 - 17:00' : 'Không xác định';
+    
+    let result = '';
+    if (dataSend.language === 'vi') {
+        result = `
+            <h3>Xin chào ${dataSend.patientName} </h3>
+            <h4>Booking Doctor xin thông báo lịch hẹn khám bệnh của bạn đã bị HỦY !</h4>
+            <h4>vào lúc: ${timeRange},ngày: ${dataSend.patientDate} </h4>
+            <p>Vui lòng đặt lại lịch khám bệnh vào khung giờ khác</p>
+            <div>
+                Xin chân thành cảm ơn !
+            </div>
+        `;
+    }
+    if (dataSend.language === 'en') {
+        result = `
+        <h3>Hello ${dataSend.patientName} </h3>
+        <h4>Booking Doctor would like to inform you that your medical appointment has been CANCELED </h4>
+        <h5>at: ${timeRange}, ${dataSend.patientDate} </h5>
+        <p>Please reschedule your examination for another time</p>
+        <div>
+            Sincerely thank !
+        </div>
+    `;
+    }
+    return result;
+}
+
 module.exports = {
-    sendSimpleEmail, sendAttachment
+    sendSimpleEmail, sendAttachment, sendCancleEmail
 };
