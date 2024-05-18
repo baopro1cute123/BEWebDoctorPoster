@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     addressClinic: DataTypes.STRING,
     nameClinic: DataTypes.STRING,
     note : DataTypes.STRING,
-    count : DataTypes.INTEGER,
+    // count : DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Doctor_Infor',

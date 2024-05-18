@@ -32,6 +32,21 @@ let getRevenueById = async(req, res) => {
     }
 }
 
+let getAllRevenueById = async(req, res) => {
+   
+    const userId = req.query.userId
+    try {
+        let revenue = await revenueService.getAllRevenueByIdService(userId);
+        return res.status(200).json(revenue)
+
+    }catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from server'
+        })
+    }
+}
+
 module.exports = {
-    getAllRevenue , getRevenueById
+    getAllRevenue , getRevenueById, getAllRevenueById
 }

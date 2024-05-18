@@ -35,6 +35,11 @@ async function callGPT(promptContent, systemContent, previousChat) {
     //   model: "gpt-4", // Switch to different models if necessary
       model: "gpt-3.5-turbo",
       messages: messages,
+      temperature: 0.7,
+      max_tokens: 2500,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
     });
 
     console.log(response.data.choices[0].message.content);
