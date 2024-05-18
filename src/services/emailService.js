@@ -40,7 +40,7 @@ let getBodyHTMLEmail = (dataSend) => {
         <b>Bác sĩ: ${dataSend.doctorName}</b>
         </div>
         <p>Nếu các thông tin trên là đúng thì vui lòng click vào đường link bên dưới để xác nhận
-        và hoàn tất thủ tục đặt lịch khám bệnh
+        và thanh toán để hoàn tất thủ tục đặt lịch khám bệnh !
         </p>
         <div>
             <a href=${dataSend.redirecLink} target='_blank'>Lịch hẹn ở đây</a>
@@ -53,26 +53,26 @@ let getBodyHTMLEmail = (dataSend) => {
     }
     if(dataSend.language === `en`){
         result = `
-               <h3>Dear ${dataSend.patientName}</h3>
-               <h4>You received this email because you made an online medical appointment on BOOKING DOCTOR</h4>
-               <p>Information for scheduling medical examination</p>
-               <div>
-                 <b>Time: ${dataSend.time}</b>
-                 </div>
-                 <div>
-                 <b>Doctor: ${dataSend.doctorName}</b>
-                 </div>
-                 <p>If the above information is correct, please click on the link below to confirm
-                 and complete the medical appointment scheduling procedure
-                 </p>
-                 <div>
-                   <a href=${dataSend.redirecLink} target='_blank'>Appointment schedule here</a>
-                 </div>
-                 <div>
-                 Sincerely thank !
-                 </div>
-               </div>
-               `
+                <h3>Dear ${dataSend.patientName}</h3>
+                <h4>You received this email because you made an online medical appointment on BOOKING DOCTOR</h4>
+                <p>Information for scheduling medical examination</p>
+                <div>
+                    <b>Time: ${dataSend.time}</b>
+                    </div>
+                    <div>
+                    <b>Doctor: ${dataSend.doctorName}</b>
+                    </div>
+                    <p>If the above information is correct, please click on the link below to confirm
+                    and payment complete the medical appointment scheduling procedure
+                    </p>
+                    <div>
+                    <a href=${dataSend.redirecLink} target='_blank'>Appointment schedule here</a>
+                    </div>
+                    <div>
+                    Sincerely thank !
+                    </div>
+                </div>
+                `
     }
     return result
 }
@@ -122,6 +122,7 @@ let getBodyHTMLEmailRemedy = (dataSend) => {
         result = `
             <h3>Xin chào ${dataSend.patientName} </h3>
             <h4>Bạn nhận được email này vì đã đặt lịch BOOKING DOCTOR và đã khám bệnh thành công vào lúc: ${timeRange}, ngày: ${dataSend.emailDate}!</h4>
+            <b>Giá khám: ${dataSend.totalAmount} VNĐ </b>
             <p>Thông tin đơn thuốc được gửi trong file đính kèm</p>
             <div>
                 Xin chân thành cảm ơn !
@@ -185,6 +186,7 @@ let getBodyHTMLEmailCancle = (dataSend) => {
             <h4>Booking Doctor xin thông báo lịch hẹn khám bệnh của bạn đã bị HỦY !</h4>
             <h4>vào lúc: ${timeRange},ngày: ${dataSend.patientDate} </h4>
             <p>Vui lòng đặt lại lịch khám bệnh vào khung giờ khác</p>
+            <h4>Booking Doctor một lần nữa xin lỗi quý bệnh nhân và xin vui lòng liên hệ email này để chúng tôi có thể hoàn lại số tiền đã đặt lịch là ${dataSend.totalAmount} vnđ </h4>
             <div>
                 Xin chân thành cảm ơn !
             </div>
@@ -195,7 +197,8 @@ let getBodyHTMLEmailCancle = (dataSend) => {
         <h3>Hello ${dataSend.patientName} </h3>
         <h4>Booking Doctor would like to inform you that your medical appointment has been CANCELED </h4>
         <h5>at: ${timeRange}, ${dataSend.patientDate} </h5>
-        <p>Please reschedule your examination for another time</p>
+        <p>Please reschedule your examination for another time and you</p>
+        <h4>Booking Doctor once again apologizes to our patients and please contact this email system so we can refund the scheduled amount of ${dataSend.totalAmount} VND </h4>
         <div>
             Sincerely thank !
         </div>

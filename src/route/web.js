@@ -84,6 +84,7 @@ let initWebRoutes = (app) => {
     
     router.get('/api/get-all-revenue',revenueController.getAllRevenue)
     router.get('/api/get-revenue-by-id',revenueController.getRevenueById)
+    router.get('/api/get-all-revenue-by-id',revenueController.getAllRevenueById)
 
 
 

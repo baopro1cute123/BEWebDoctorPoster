@@ -478,18 +478,11 @@ let sendRemedyService = (data) => {
                         amount: adminAmount
                     })
 
-                    // let doctor = await db.Doctor_Infor.findOne({ 
-                    //     where: {
-                    //         doctorId: data.doctorId
-                    //     }
-                    // });
-                    // if (doctor) {
-                    //     doctor.count += 1;
-                    //     await doctor.save();
-                    // }
-                    
-                    // console.log("check doctor", doctor);
-                    
+                
+                    // await db.Doctor_Infor.update(
+                    //         { count: Sequelize.literal('count + 1') },
+                    //         { where: { doctorId: data.doctorId } }
+                    //     )
                 
                 resolve({
                     errCode: 0,

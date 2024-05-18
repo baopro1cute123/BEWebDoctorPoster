@@ -41,11 +41,11 @@ module.exports = {
       note: {
         type: Sequelize.STRING,
       },
-      count: {
-        type: Sequelize.INTEGER,
-        allowNull:false,
-        defaultValue : 0,
-      },
+      // count: {
+      //   type: Sequelize.INTEGER,
+      //   allowNull:false,
+      //   defaultValue : 0,
+      // },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

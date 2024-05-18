@@ -96,9 +96,36 @@ let getRevenueByIdService = (startDate, endDate, userId) => {
         }
     });
 };
+let getAllRevenueByIdService = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!userId) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing parameter !"
+                });
+            } else {
+                let totalAmount = await db.Revenue.sum('amount', {
+                    where: {
+                        userId: userId
+                    }
+                });
+
+                resolve({
+                    errCode: 0,
+                    errMessage: "Ok",
+                    data: totalAmount
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 
 
 
 module.exports = {
-    getAllRevenueService, getRevenueByIdService
+    getAllRevenueService, getRevenueByIdService, getAllRevenueByIdService
 }
