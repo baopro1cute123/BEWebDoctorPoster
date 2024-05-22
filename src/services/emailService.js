@@ -132,7 +132,9 @@ let getBodyHTMLEmailRemedy = (dataSend) => {
     if (dataSend.language === 'en') {
         result = `
             <h3>Hello ${dataSend.patientName} </h3>
-            <h4>You are receiving this email because you have booked a BOOKING DOCTOR appointment and had a successful medical examination at: ${timeRange}, ${dataSend.patientDate}!</h4>
+            <h4>You are receiving this email because you have booked a BOOKING DOCTOR appointment and had a successful medical examination at: ${timeRange}, ${dataSend.emailDate}!</h4>
+            <b>Price: ${dataSend.totalAmount} VNĐ </b>
+
             <p>Prescription information is sent in the attached file</p>
             <div>
                 Sincerely thank !

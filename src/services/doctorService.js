@@ -1,6 +1,7 @@
-import _ from 'lodash';
 import db from '../models/index';
 import emailService from './emailService';
+const _ = require('lodash');
+
 require('dotenv').config();
 const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE
 let getTopDoctor = (limit) => {
@@ -186,7 +187,7 @@ let getDetaiDoctorbyIdService= (inputId) => {
                     nest: true
                 })
                 if(data && data.image) {
-                    data.image = new Buffer (data.image, 'base64').toString('binary')
+                    data.image = Buffer.from(data.image, 'base64').toString('binary')
                 }
                 if (!data) {
                     data = {}
@@ -215,21 +216,21 @@ let bulkCreateScheduleService = (data) => {
                 })
             }else{
                 let schedule = data.arrSchedule;
+                //thêm max_number
                 if(schedule && schedule.length > 0 ){
                     schedule = schedule.map(item => {
-                        item.maxNumber =MAX_NUMBER_SCHEDULE;
+                        item.maxNumber = MAX_NUMBER_SCHEDULE;
                         return item
                     })
                 }
 
-                let existing = await db.Schedule.findAll(
-                    {
-                        where: {doctorId: data.doctorId, date: data.date},
-                        attributes: ['timeType', 'date', 'doctorId','maxNumber'],
-                        raw : true
+                let existing = await db.Schedule.findAll({
+                    where: {
+                        doctorId: data.doctorId,
+                        date : `${data.date}`
                     }
-                );
-            
+                });
+                
                 let toCreate = _.differenceWith(schedule, existing, (a,b)=>{
                     return a.timeType === b.timeType && +a.date === +b.date;
                 });
@@ -239,7 +240,8 @@ let bulkCreateScheduleService = (data) => {
                 }
                 resolve({
                     errCode: 0,
-                    errMessage : 'Ok'
+                    errMessage : 'Ok',
+                    data: existing
                 })
             }
             
@@ -357,7 +359,7 @@ let getProFileDoctorByIdService = (doctorId) => {
                     nest: true
                 })
                 if(data && data.image) {
-                    data.image = new Buffer (data.image, 'base64').toString('binary')
+                    data.image = Buffer.from(data.image, 'base64').toString('binary')
                 }
 
                 if(!data) data = {};
