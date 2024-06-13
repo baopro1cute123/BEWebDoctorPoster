@@ -37,7 +37,7 @@ let getAllDoctors = () => {
             let doctors = await db.User.findAll({
                 where : {roleId: 'R2'},
                 attributes: {
-                    exclude: ['password', 'image']
+                    exclude: ['password']
                 },
             })
             resolve({
@@ -178,7 +178,7 @@ let getDetaiDoctorbyIdService= (inputId) => {
                                 {model: db.Allcode, as: 'priceTypeData', attributes:['valueEn', 'valueVi']},
                                 {model: db.Allcode, as: 'provinceTypeData', attributes:['valueEn', 'valueVi']},
                                 {model: db.Allcode, as: 'paymentTypeData', attributes:['valueEn', 'valueVi']},
-                                // {model: db.Specialty, as: 'SpecialtyData', attributes:['name']}, // tự làm
+                                {model: db.Specialty, as: 'SpecialtyData', attributes:['name']}, // tự làm
                             ]
                             
                         }
@@ -466,8 +466,8 @@ let sendRemedyService = (data) => {
                     })
                     let adminId = admin.id
                     let totalAmount = data.totalAmount
-                    let adminAmount = totalAmount * 0.3
-                    let doctorAmount = totalAmount * 0.7
+                    let adminAmount = totalAmount * 0.2
+                    let doctorAmount = totalAmount * 0.8
 
                     await db.Revenue.create({
                         date: data.patientDate,

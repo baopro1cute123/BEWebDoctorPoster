@@ -27,18 +27,18 @@ let handleUserLogin = (email, password) => {
                     }
                     else{
                         userData.errCode = 3,
-                        userData.errMessage = 'Wrong password';
+                        userData.errMessage = 'Sai mật khẩu';
                     }
                 }
                 else{
                     userData.errCode = 2;
-                    userData.errMessage = `User's not found !!!`
+                    userData.errMessage = `Không tìm thấy người dùng !`
                 }
 
             }
             else{
                 userData.errCode = 1;
-                userData.errMessage = `Your's Email isn't exist in your system !!!`
+                userData.errMessage = `Sai tài khoản hoặc email !`
             }
             resolve(userData)
 

@@ -32,10 +32,10 @@ const handleMessageServices = (message) => {
                     break;
                     case lowerCaseMessage.includes('phòng khám'):
                         let clinics = await db.Clinic.findAll({
-                            attributes: ['descriptionMarkdown', 'image', 'id'],
+                            attributes: ['name', 'image', 'id'],
                         });
 
-                        let data = clinics.map(clinic => ({ id: clinic.id, descriptionMarkdown: clinic.descriptionMarkdown, imgclinic: clinic.image }));
+                        let data = clinics.map(clinic => ({ id: clinic.id, name: clinic.name, imgclinic: clinic.image }));
 
                         response = {
                             errCode: 0,

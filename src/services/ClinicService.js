@@ -68,7 +68,7 @@ let getDetailClinicByIdService = (inputId) => {
                     where: {
                         id: inputId
                     },
-                    attributes: ['descriptionHTML', 'descriptionMarkdown','name', 'address']
+                    attributes: ['descriptionHTML', 'descriptionMarkdown','name', 'address', 'image']
                 })
                 if(data){
 

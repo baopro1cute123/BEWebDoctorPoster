@@ -299,7 +299,33 @@ let getAllPatientBookingServices = () => {
     });
 };
 
+let getCheckBookingServices = (token) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let check = await db.Booking.findOne({
+                where : {
+                    token: token,
+                    statusId: 'S2'
+                }
+            })
+            if(check){
+                resolve({
+                    errCode: 0,
+                    errMessage: "Ok",
+                });
+            }else{
+                resolve({
+                    errCode: -1,
+                    errMessage: "Missing parameter !"
+                })
+            }
+            
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
 
 module.exports = {
-    postBookAppointmentServices , postVerifyBookAppointmentServices , getAllPatientServices, getAllPatientByDoctorIdServices, getAllPatientBookingServices
+    postBookAppointmentServices , postVerifyBookAppointmentServices , getAllPatientServices, getAllPatientByDoctorIdServices, getAllPatientBookingServices, getCheckBookingServices
 }

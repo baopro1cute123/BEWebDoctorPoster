@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) { //dinh danh cac moi quan he
 
-      // Specialty.hasMany(models.Doctor_Infor, { foreignKey: 'specialtyId', as: 'doctorInfo' }); // tự làm
+      Specialty.hasMany(models.Doctor_Infor, { foreignKey: 'specialtyId', as: 'SpecialtyData' }); // tự làm
 
     }
   };

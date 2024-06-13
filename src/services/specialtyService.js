@@ -61,12 +61,12 @@ let getDetailSpecialtyByIdService = (inputId, location) => {
                     errMessage: "Missing parameter !"
                 })
             }else{
-           
+        
                 let data = await db.Specialty.findOne({
                     where: {
                         id: inputId
                     },
-                    attributes: ['descriptionHTML', 'descriptionMarkdown']
+                    attributes: ['descriptionHTML', 'descriptionMarkdown', 'name', 'image']
                 });
 
                 if(data){
