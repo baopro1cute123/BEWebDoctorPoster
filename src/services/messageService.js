@@ -72,10 +72,10 @@ const handleMessageServices = (message) => {
                             data : province
                         };
                         break;
-                    case sick.some(keyword => lowerCaseMessage.includes(`tôi bị đau ${keyword.name.toLowerCase()}`)):
+                    case sick.some(keyword => lowerCaseMessage.includes(`tôi cần khám về ${keyword.name.toLowerCase()}`)):
                             let dynamicSpecialties = [];
                             for (const keyword of sick) {
-                                if (lowerCaseMessage.includes(`tôi bị đau ${keyword.name.toLowerCase()}`)) {
+                                if (lowerCaseMessage.includes(`tôi cần khám về ${keyword.name.toLowerCase()}`)) {
                                     let specialties = await db.Specialty.findAll({
                                         where: {
                                             name: keyword.name
@@ -87,7 +87,7 @@ const handleMessageServices = (message) => {
                             }
                             response = {
                                 errCode: 0,
-                                message: `Chuyên khoa có thể liên quan về tình hình bệnh của bạn`,
+                                message: `Đây là chuyên khoa liên quan về bệnh của bạn: `,
                                 data: dynamicSpecialties
                             };
                             break;
