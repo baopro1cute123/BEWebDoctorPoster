@@ -5,6 +5,7 @@ const config = require('./config');
 const secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
 const accessKey = 'F8BBA842ECF85';
 
+
 const paymentMoMoService = (price, token, doctorId) => {
     return new Promise(async (resolve, reject) => {
         const secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
@@ -12,14 +13,14 @@ const paymentMoMoService = (price, token, doctorId) => {
         const orderInfo = 'Thanh toán với MoMo';
         const partnerCode = 'MOMO';
         const redirectUrl = `${process.env.URL_REACT}/verify-booking?token=${token}&doctorId=${doctorId}`;
-        const ipnUrl = 'https://0778-14-178-58-205.ngrok-free.app/callback';
-        const requestType = 'payWithMethod';
+        const ipnUrl = "https://callback.url/notify";
+        const requestType = 'captureWallet';
         const extraData = '';
         const orderGroupId = '';
         const autoCapture = true;
         const lang = 'vi';
-
-        const amount = price;
+        
+        const amount = price.toString(); // Ensure amount is a string
         const orderId = partnerCode + new Date().getTime();
         const requestId = orderId;
 
@@ -32,8 +33,7 @@ const paymentMoMoService = (price, token, doctorId) => {
 
         const requestBody = {
             partnerCode: partnerCode,
-            partnerName: 'Test',
-            storeId: 'MomoTestStore',
+            accessKey: accessKey,
             requestId: requestId,
             amount: amount,
             orderId: orderId,
@@ -61,7 +61,7 @@ const paymentMoMoService = (price, token, doctorId) => {
             const result = await axios(options);
             resolve({
                 errCode: 0,
-                errMessage: "Ok",
+                errMessage: "OK",
                 data: result.data,
             });
         } catch (error) {
@@ -74,6 +74,9 @@ const paymentMoMoService = (price, token, doctorId) => {
         }
     });
 };
+
+module.exports = paymentMoMoService;
+
 
 const CheckpaymentMoMoService = (orderId) => {
     return new Promise(async (resolve, reject) => {
